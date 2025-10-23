@@ -1,0 +1,330 @@
+# 网络爬虫
+
+![1760430654846](image/爬虫笔记/1760430654846.png)
+
+# **爬虫实现的基本流程**
+
+一、数据来源分析
+1.明确需求
+2.抓包分析
+二、代码实现步骤
+1.发送请求
+2.获取数据
+3.解析数据
+4.保存数据
+
+---
+
+# **数据响应格式**
+
+response.text:文本数据——》字符串
+response.json():json数据——》字典，列表
+response.content:二进制数据——》二进制 （用于图片、视频、音频）
+
+---
+
+# 对于需要cookie的请求，需要使用session对象
+
+```
+//创建会话对象，自动管理cookie
+
+session = requests.Session()
+
+//先访问首页或其他页面获取基础cookie
+
+home_url = "https://www.taobao.com"
+session.get(home_url, headers=headers)
+
+//再访问需要登录的页面
+
+url = "https://api.taobao.com/api.do"
+
+//然后使用这些cookie进行API请求
+
+response = session.get(url, params=params, headers=headers)
+```
+
+---
+
+# 国内镜像源
+
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple name
+
+---
+
+# 网络请求主要方式特点
+
+post请求：隐性的表单提交
+get请求：明文显示在url中
+
+---
+
+# 对于下载ts文件并且进行合并的一次性操作
+
+```
+--for循环遍历
+for ts in tqdm(ts_list):
+    --拼接完整ts链接
+    ts_url = base_url + ts
+    --获取内容
+    ts_content = requests.get(ts_url,headers=headers).content
+    --下载ts文件,并且保存
+    with open(tite + '.mp4', 'ab') as f:
+        f.write(ts_content)
+```
+
+---
+
+# mooc课程4层加密
+
+1. m3u8文件链接加密
+2. m3u8文件内容加密
+3. 密钥内容加密
+4. 视频内容加密
+
+---
+
+# --对于无法或较难的JS逆向破解加密参数，可以使用DrissionPage模拟浏览器操作跳过！
+
+---
+
+# --状态码为403，大概率是没有加防盗链！
+
+---
+
+# 模式	核心行为	文件不存在	文件已存在	可读写	文本 / 二进制
+
+'w'	写入（覆盖）	创建	清空后写入	仅写	文本
+'a'	追加（末尾添加）	创建	保留原内容	仅写	文本
+'x'	独占创建并写入	创建	抛异常	仅写	文本
+'wb'	二进制写入（覆盖）	创建	清空后写入	仅写	二进制
+'ab'	二进制追加	创建	保留原内容	仅写	二进制
+'r+'	读写（不清空，覆盖写入）	抛异常	保留原内容	读写	文本
+'a+'	追加 + 读取	创建	保留原内容	读写	文本
+
+---
+
+# webpack案例流程
+
+1.找加载器对应的文件
+
+![1759656380487](image/爬虫笔记/1759656380487.png)
+2.看是否能注释初始化环境代码，免去补环境操作
+
+3.加上执行模块日志(在真正的功能调用上面打印)
+
+4.全局调用加载器函数
+
+---
+
+# webpack——调用js代码超级大坑
+
+编译完js代码，运行python文件来调用js代码中的方法时，call('function_name')报错execjs._exceptions.ProgramError: TypeError: {(intermediate value)} is not a function
+
+解决办法：调整编译js代码的顺序
+
+---
+
+# Scrapy框架流程
+
+![1759656580683](image/爬虫笔记/1759656580683.png)
+
+---
+
+# 调试方式
+
+1.使用工具自带调试工具，打断点进行调试
+
+2.使用breakpoint()函数，使用步骤：
+
+在需要暂停的行添加 `breakpoint()`
+
+程序执行到此时会进入调试模式，终端显示 `(Pdb)` 提示符
+
+常用调试命令：
+
+`n`：执行下一行 
+
+`c`：继续执行到下一个断点
+
+`p 变量名`：打印变量值（或者直接输入变量名，不用p）
+
+`q`：退出调试（程序终止）
+
+---
+
+# 滑块验证函数
+
+```
+
+# 改进的水平移动版滑块验证码处理函数
+def solve_slider_captcha_horizontal(slider_css,bg_img_css,slider_img_css,page):
+    try:
+        print("开始查找滑块验证码元素...")
+
+        # 查找滑块元素
+        slider = page.ele(slider_css, timeout=5)
+        if not slider:
+            print("未找到滑块元素")
+            return False
+
+        print("找到滑块验证码，开始处理...")
+
+        # 查找背景图和滑块图
+        bg_img_element = page.ele(bg_img_css, timeout=3)
+        slide_img_element = page.ele(slider_img_css, timeout=3)
+
+        if not bg_img_element or not slide_img_element:
+            print("未找到验证码图片元素")
+            return False
+
+        # 获取图片的src
+        bg_src = bg_img_element.attr('src')
+        slide_src = slide_img_element.attr('src')
+
+        # 下载图片数据
+        bg_data = None
+        slide_data = None
+
+        # 处理背景图
+        if bg_src and bg_src.startswith('data:image'):
+            # base64格式
+            bg_data = base64.b64decode(bg_src.split(',')[1])
+            print("背景图为base64格式")
+
+        # 处理滑块图
+        if slide_src and slide_src.startswith('data:image'):
+            # base64格式
+            slide_data = base64.b64decode(slide_src.split(',')[1])
+            print("滑块图为base64格式")
+
+        if not bg_data or not slide_data:
+            print("无法获取图片数据")
+            return False
+
+        # 将图片数据转换为OpenCV格式
+        try:
+            bg_array = np.frombuffer(bg_data, np.uint8)
+            slide_array = np.frombuffer(slide_data, np.uint8)
+
+            bg_img = cv2.imdecode(bg_array, cv2.IMREAD_COLOR)
+            slide_img = cv2.imdecode(slide_array, cv2.IMREAD_COLOR)
+
+            if bg_img is None or slide_img is None:
+                print("图片解码失败")
+                return False
+
+            print(f"图片解码成功，背景图尺寸: {bg_img.shape}, 滑块图尺寸: {slide_img.shape}")
+        except Exception as e:
+            print(f"图片解码时出错: {e}")
+            return False
+
+        # 使用模板匹配找到滑块位置（改进版）
+        try:
+            # 转换为灰度图
+            bg_gray = cv2.cvtColor(bg_img, cv2.COLOR_BGR2GRAY)
+            slide_gray = cv2.cvtColor(slide_img, cv2.COLOR_BGR2GRAY)
+
+            # 对滑块图片进行预处理，创建掩码
+            _, mask = cv2.threshold(slide_gray, 1, 255, cv2.THRESH_BINARY)
+
+            # 尝试多种匹配方法以提高准确性
+            methods = [cv2.TM_CCOEFF_NORMED, cv2.TM_CCORR_NORMED]
+            best_result = 0
+            best_loc = (0, 0)
+
+            for method in methods:
+                try:
+                    result = cv2.matchTemplate(bg_gray, slide_gray, method, mask=mask)
+                    _, max_val, _, max_loc = cv2.minMaxLoc(result)
+
+                    if max_val > best_result:
+                        best_result = max_val
+                        best_loc = max_loc
+
+                except Exception as e:
+                    print(f"匹配方法 {method} 出错: {e}")
+                    continue
+
+            # 获取最佳匹配位置
+            x, y = best_loc
+            print(f"最佳匹配度: {best_result}, 位置: ({x}, {y})")
+
+            # 使用匹配结果计算拖拽距离
+            target_x = x
+
+        except Exception as e:
+            print(f"模板匹配时出错: {e}")
+            target_x = 200  # 使用默认值
+
+        # 计算需要拖拽的距离
+        drag_distance = target_x + 5  # 增加少量补偿确保完全覆盖缺口
+
+        if drag_distance <= 0 or drag_distance > 300:  # 设置合理范围
+            drag_distance = 200  # 使用默认值
+
+        print(f"需要拖拽的距离: {drag_distance}")
+
+        # 执行拖拽 - 只进行水平移动
+        try:
+            import random
+
+            # 构造偏移量列表 - 只在水平方向移动
+            offsets = []
+            remaining = drag_distance
+
+            while remaining > 0:
+                if remaining > 50:
+                    step = min(random.randint(15, 25), remaining)
+                elif remaining > 10:
+                    step = min(random.randint(8, 15), remaining)
+                else:
+                    step = min(random.randint(3, 8), remaining)
+
+                # 垂直方向移动设为0，只进行水平移动
+                offsets.append((step, 0))
+                remaining -= step
+
+            # 微调 - 仍然只进行水平移动
+            offsets.append((-2, 0))
+            offsets.append((3, 0))
+
+            print(f"拖拽偏移量: {offsets}")
+            slider.drag(drag_distance,0)
+            print("拖拽执行完成")
+        except Exception as e:
+            print(f"拖拽执行失败: {e}")
+            return False
+
+        # 等待验证结果
+        time.sleep(3)
+
+        # 检查验证是否成功
+        try:
+            slider_check = page.ele(slider_css, timeout=1)
+            if slider_check:
+                print("验证失败，滑块仍在原位")
+                return False
+            else:
+                print("滑块验证成功")
+                return True
+        except:
+            print("滑块验证成功")
+            return True
+
+    except Exception as e:
+        print(f"处理滑块验证码时出错: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
+# 尝试使用改进的水平移动版方法处理滑块验证码
+print("尝试使用改进的水平移动版方法自动处理滑块验证码...")
+slider_css = 'css:.move-img'
+bg_img_css = 'css:#main_img'
+slider_img_css = 'css:#slot_img'
+captcha_solved = solve_slider_captcha_horizontal(slider_css,bg_img_css,slider_img_css,dp)
+```
+
+
+---

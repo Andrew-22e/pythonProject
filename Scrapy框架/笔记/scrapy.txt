@@ -1,0 +1,10 @@
+--创建新项目
+scrapy startproject name
+--进入项目文件夹
+cd name
+--创建基础url
+scrapy genspider name example.com
+--启动项目
+scrapy crawl name
+--存储数据
+scrapy crawl name -o name.json(csv、xml)

@@ -31,7 +31,8 @@ cookies = {
 }
 url = "https://dict.youdao.com/webtranslate"
 # 动态填充参数
-input_text = input("请输入要翻译的文本：")
+#input_text = input("请输入要翻译的文本：")
+input_text = '轮播'
 time = int(time.time()*1000)  # 时间戳，如果是13位的时间戳，则乘以1000
 # 创建md5对象
 md5_obj = md5()
